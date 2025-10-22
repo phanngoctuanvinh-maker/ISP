@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Đăng nhập</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="../css/login.css">
+    <!-- Google Sign-In Library -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <form class="login-form">
+        <!-- Auth Header bên trong form -->
+        <div class="auth-header">
+            <h2 class="auth-title">Đăng Nhập</h2>
+        </div>
+
+        <!-- Email/Phone Input -->
+        <div class="form-group">
+            <label class="form-label">Email hoặc Số điện thoại</label>
+            <input type="text" class="form-input" required>
+        </div>
+
+        <!-- Password Input -->
+        <div class="form-group">
+            <label class="form-label">Mật khẩu</label>
+            <div class="password-wrapper">
+                <input type="password" class="form-input password-input" required>
+                <button type="button" class="toggle-password">
+                    <i class="far fa-eye-slash"></i>
+                </button>
+            </div>
+            <!-- Forgot Password Link -->
+            <div class="forgot-password-link">
+                <a href="#" id="forgotPasswordBtn">Quên mật khẩu?</a>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn-submit">Đăng Nhập</button>
+
+        <!-- Divider -->
+        <div class="divider">
+            <span>Hoặc</span>
+        </div>
+
+        <!-- Google Sign-In Button -->
+        <div id="g_id_onload" 
+            data-client_id="667355686833-ofh62h0dfjmn8fi25c0d23hc7ctei7sb.apps.googleusercontent.com"
+            data-context="signin" 
+            data-ux_mode="popup" 
+            data-callback="handleGoogleLogin" 
+            data-auto_prompt="false">
+        </div>
+
+        <div class="g_id_signin" 
+            data-type="standard" 
+            data-shape="rectangular" 
+            data-theme="outline"
+            data-text="signin_with" 
+            data-size="large" 
+            data-logo_alignment="left" 
+            data-width="100%">
+        </div>
+
+        <!-- Register Link -->
+        <div class="login-link">
+            Chưa có tài khoản? <a href="#" class="switch-to-register">Đăng ký ngay</a>
+        </div>
+    </form>
+
+    <!-- Forgot Password Section -->
+    <div id="forgotPasswordSection" style="display:none; margin-top:20px;">
+        <h5>Lấy lại mật khẩu</h5>
+        <form id="forgotPasswordForm">
+            <label for="forgotEmail">Nhập email đăng ký:</label>
+            <input type="email" id="forgotEmail" name="forgotEmail" required><br>
+            <button type="submit">Gửi yêu cầu</button>
+        </form>
+        <div id="forgotPasswordMessage"></div>
+    </div>
+
+    <!-- API Script (phải được load trước) -->
+    <script src="/ISP392-Font/api.js"></script>
+    <script defer src="../js/login.js"></script>
+    <script src="../js/forgotpassword-redirect.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin tài khoản</title>
+    <link rel="stylesheet" href="../css/profileuser.css">
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo" id="logoDriveNow" style="cursor:pointer;"> <span class="icon-car"></span> <span>DriveNow</span> </div>
+        <div class="welcome">Xin chào bạn!</div>
+        <ul class="menu">
+            <li><span class="icon-user"></span> Tài khoản của tôi</li>
+            <li><span class="icon-heart"></span> Xe yêu thích</li>
+            <li><span class="icon-calendar"></span> Lịch trình</li>
+            <li><span class="icon-location"></span> Địa chỉ của tôi</li>
+            <li><span class="icon-key"></span> Đổi mật khẩu</li>
+            <li><span class="icon-trash"></span> Yêu cầu xoá tài khoản</li>
+            <li><span class="icon-logout"></span> Đăng xuất</li>
+        </ul>
+    </div>
+    <div class="main-content">
+        <div class="profile-header">
+            <div class="profile-title">Thông tin tài khoản <span class="icon-edit"></span></div>
+            <div class="profile-avatar">
+                <img id="avatarImg" src="../assets/icons/user-avatar.svg" alt="avatar">
+            </div>
+            <div class="profile-info">
+                <div class="profile-name" id="profileName">Tên khách hàng</div>
+                <div class="profile-join">Tham gia: <span id="joinDate">--/--/----</span></div>
+            </div>
+        </div>
+        <div class="profile-details">
+            <div class="profile-row">
+                <span>Ngày sinh</span>
+                <span id="dob">--/--/----</span>
+            </div>
+            <div class="profile-row">
+                <span>Giới tính</span>
+                <span id="gender">---</span>
+            </div>
+            <div class="profile-row">
+                <span>Số điện thoại</span>
+                <span id="phone">---</span>
+            </div>
+            <div class="profile-row">
+                <span>Email</span>
+                <span id="email">---</span>
+            </div>
+        </div>
+    </div>
+    <script src="/ISP392-Font/api.js"></script>
+    <script src="../js/profileuser.js"></script>
+</body>
+</html>

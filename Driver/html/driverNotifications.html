@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DriveNow - Notifications</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/driver.css">
+  <link rel="stylesheet" href="../css/driverNotifications.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- TOP BAR -->    
+    <div class="top-bar">
+      <div class="top-bar-content">
+        <div class="logo-section">
+          <i class="bi bi-car-front-fill"></i>
+          <span class="brand-name">DriveNow - Driver Panel</span>
+        </div>
+        <div class="top-bar-right">
+          <div class="notification-icon">
+            <i class="bi bi-bell-fill"></i>
+            <span class="notification-badge">6</span>
+          </div>
+          <div class="user-info">
+            <i class="bi bi-person-circle"></i>
+            <span class="driver-name">Tài xế A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <nav class="nav flex-column">
+          <a class="nav-link" href="driver.html">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+          </a>
+          <a class="nav-link" href="trip.html">
+            <i class="bi bi-card-list"></i>
+            <span>Trips</span>
+          </a>
+          <a class="nav-link" href="driverTripHistory.html">
+            <i class="bi bi-clock-history"></i>
+            <span>Trip History</span>
+          </a>
+          <a class="nav-link" href="driverEarnings.html">
+            <i class="bi bi-currency-dollar"></i>
+            <span>Earnings</span>
+          </a>
+          <a class="nav-link" href="driverProfile.html">
+            <i class="bi bi-person"></i>
+            <span>Profile</span>
+          </a>
+          <a class="nav-link active" href="driverNotifications.html">
+            <i class="bi bi-envelope"></i>
+            <span>Notifications</span>
+            <span class="nav-badge">6</span>
+          </a>
+          <a class="nav-link" href="driverSettings.html">
+            <i class="bi bi-gear"></i>
+            <span>Settings</span>
+          </a>
+          <div class="nav-item mt-auto">
+            <a class="nav-link logout-btn" href="#" onclick="handleLogout()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="main-content">
+        <div class="content-header">
+          <h2>Notifications</h2>
+          <p class="text-muted">Xem tất cả thông báo của bạn</p>
+        </div>
+
+        <!-- Notifications Card -->
+        <div class="card notifications-card">
+          <div class="card-header">
+            <h5><i class="bi bi-bell-fill"></i> Recent Notifications</h5>
+          </div>
+          <div class="card-body">
+            <!-- Notifications List -->
+            <div class="notifications-list" id="notificationsList">
+              
+              <!-- Notification Item 1 -->
+              <div class="notification-item unread" data-type="success">
+                <div class="notification-icon success">
+                  <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">Trip #TR015 completed successfully!</div>
+                  <div class="notification-date">
+                    <i class="bi bi-calendar3"></i> Date: 14/10/2025, 09:45 AM
+                  </div>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn-mark-read" title="Mark as read">
+                    <i class="bi bi-check2"></i>
+                  </button>
+                  <button class="btn-delete" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notification Item 2 -->
+              <div class="notification-item unread" data-type="warning">
+                <div class="notification-icon warning">
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">Your trip #TR014 was cancelled.</div>
+                  <div class="notification-date">
+                    <i class="bi bi-calendar3"></i> Date: 13/10/2025, 04:22 PM
+                  </div>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn-mark-read" title="Mark as read">
+                    <i class="bi bi-check2"></i>
+                  </button>
+                  <button class="btn-delete" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notification Item 3 -->
+              <div class="notification-item unread" data-type="info">
+                <div class="notification-icon info">
+                  <i class="bi bi-info-circle-fill"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">Payment for Trip #TR013 is processed.</div>
+                  <div class="notification-date">
+                    <i class="bi bi-calendar3"></i> Amount: $7.50, Date: 13/10/2025
+                  </div>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn-mark-read" title="Mark as read">
+                    <i class="bi bi-check2"></i>
+                  </button>
+                  <button class="btn-delete" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notification Item 4 -->
+              <div class="notification-item unread" data-type="primary">
+                <div class="notification-icon primary">
+                  <i class="bi bi-car-front-fill"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">New trip request available nearby.</div>
+                  <div class="notification-date">
+                    <i class="bi bi-geo-alt-fill"></i> Distance: 1.2 km
+                  </div>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn-mark-read" title="Mark as read">
+                    <i class="bi bi-check2"></i>
+                  </button>
+                  <button class="btn-delete" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notification Item 5 -->
+              <div class="notification-item unread" data-type="secondary">
+                <div class="notification-icon secondary">
+                  <i class="bi bi-gear-fill"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">System maintenance scheduled tonight.</div>
+                  <div class="notification-date">
+                    <i class="bi bi-clock-fill"></i> Time: 11:00 PM – 1:00 AM
+                  </div>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn-mark-read" title="Mark as read">
+                    <i class="bi bi-check2"></i>
+                  </button>
+                  <button class="btn-delete" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Notification Item 6 -->
+              <div class="notification-item unread" data-type="new">
+                <div class="notification-icon new">
+                  <i class="bi bi-star-fill"></i>
+                </div>
+                <div class="notification-content">
+                  <div class="notification-title">App update 2.1.5 now available!</div>
+                  <div class="notification-date">
+                    <i class="bi bi-calendar3"></i> Download now to get new features
+                  </div>
+                </div>
+                <div class="notification-actions">
+                  <button class="btn-mark-read" title="Mark as read">
+                    <i class="bi bi-check2"></i>
+                  </button>
+                  <button class="btn-delete" title="Delete">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Empty State (hidden by default) -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+              <i class="bi bi-inbox"></i>
+              <h5>No notifications</h5>
+              <p>You're all caught up! Check back later for updates.</p>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button class="btn btn-primary" id="markAllReadBtn">
+                <i class="bi bi-check-all"></i> Mark All as Read
+              </button>
+              <button class="btn btn-danger" id="clearAllBtn">
+                <i class="bi bi-trash"></i> Clear All
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>&copy; 2025 DriveNow. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/driver.js"></script>
+  <script src="../js/driverNotifications.js"></script>
+  <script src="/ISP392-Font/api.js"></script>
+</body>
+</html>

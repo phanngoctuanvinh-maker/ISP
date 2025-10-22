@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tìm Kiếm Xe - DriveNow</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/searchcar.css">
+</head>
+<body>
+    <!-- Import Database & JavaScript -->
+    <script src="../js/api.js"></script>
+    <script defer src="../js/homepage.js"></script>
+    <script defer src="../js/searchcar.js"></script>
+    
+    <!-- Header -->
+    <header class="main-header">
+        <div class="container">
+            <nav class="navbar navbar-expand-lg">
+                <div class="container-fluid">
+                    <!-- Logo -->
+                    <a class="navbar-brand" href="homepage.html">
+                        <i class="fas fa-car-side brand-icon"></i>
+                        <span class="brand-text">DriveNow</span>
+                    </a>
+
+                    <!-- Mobile Toggle Button -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    
+                    <!-- Navigation Items -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="homepage.html">Trang chủ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Dịch vụ</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Về chúng tôi</a>
+                            </li>
+                        </ul>
+                        
+                        <!-- Auth Buttons -->
+                        <div class="auth-buttons">
+                            <button class="btn btn-register" type="button">Đăng ký</button>
+                            <button class="btn btn-login" type="button">Đăng nhập</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Search Section -->
+    <section class="search-section">
+        <div class="container">
+            <!-- Search Info Bar -->
+            <div class="search-info-bar">
+                <div class="search-info-item">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Nội Bài - Tân Sơn Nhất</span>
+                </div>
+                <div class="search-info-item">
+                    <i class="far fa-calendar-alt"></i>
+                    <span>08:00, 27/09/2025 - 15:00, 30/09/2025</span>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <div class="filter-tabs">
+                <button class="filter-tab active">
+                    Tất cả
+                </button>
+                <button class="filter-tab" data-bs-toggle="modal" data-bs-target="#carTypeModal">
+                    <i class="fas fa-car"></i>
+                    Loại Xe
+                </button>
+                <button class="filter-tab" data-bs-toggle="modal" data-bs-target="#carBrandModal" id="carBrandFilterBtn">
+                    <i class="fas fa-globe"></i>
+                    Hãng Xe
+                </button>
+                <button class="filter-tab" data-bs-toggle="modal" data-bs-target="#transmissionModal" id="transmissionFilterBtn">
+                    <i class="fas fa-cogs"></i>
+                    Truyền động
+                </button>
+                <button class="filter-tab">
+                    <i class="fas fa-users"></i>
+                    Xe Điện
+                </button>
+                <button class="filter-tab">
+                    <i class="fas fa-charging-station"></i>
+                    Xe Xăng &Điện
+                </button>
+                <button class="filter-tab" data-bs-toggle="modal" data-bs-target="#advancedFilterModal" id="advancedFilterBtn">
+                    <i class="fas fa-sliders-h"></i>
+                    Bộ Lọc
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Car Results Section -->
+    <section class="car-results-section">
+        <div class="container">
+            <div class="cars-grid">
+                <!-- Danh sách xe sẽ được load từ API -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Loại Xe -->
+    <div class="modal fade" id="carTypeModal" tabindex="-1" aria-labelledby="carTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="carTypeModalLabel">Loại xe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="car-types-grid">
+                        <!-- 4 Chỗ Mini -->
+                        <div class="car-type-item" data-type="mini">
+                            <div class="car-type-image">
+                                <img src="../assets/inmage/image copy 4.png" alt="4 Chỗ Mini">
+                            </div>
+                            <div class="car-type-name">4 Chỗ Mini</div>
+                        </div>
+
+                        <!-- 4 Chỗ Sedan -->
+                        <div class="car-type-item" data-type="sedan">
+                            <div class="car-type-image">
+                                <img src="../assets/inmage/image copy 5.png" alt="4 Chỗ Sedan">
+                            </div>
+                            <div class="car-type-name">4 Chỗ Sedan</div>
+                        </div>
+
+                        <!-- 5 Chỗ CUV Gầm cao -->
+                        <div class="car-type-item" data-type="cuv-5">
+                            <div class="car-type-image">
+                                <img src="../assets/inmage/image copy 6.png" alt="5 Chỗ CUV">
+                            </div>
+                            <div class="car-type-name">5 Chỗ CUV Gầm cao</div>
+                        </div>
+
+                        <!-- 7 Chỗ CUV Gầm cao -->
+                        <div class="car-type-item" data-type="suv-7">
+                            <div class="car-type-image">
+                                <img src="../assets/inmage/image copy 7.png" alt="7 Chỗ SUV">
+                            </div>
+                            <div class="car-type-name">7 Chỗ CUV Gầm cao</div>
+                        </div>
+
+                        <!-- 7 Chỗ MPV Gầm thấp -->
+                        <div class="car-type-item" data-type="mpv">
+                            <div class="car-type-image">
+                                <img src="../assets/inmage/image copy 8.png" alt="7 Chỗ MPV">
+                            </div>
+                            <div class="car-type-name">7 Chỗ MPV Gầm thấp</div>
+                        </div>
+
+                        <!-- Bán Tải -->
+                        <div class="car-type-item" data-type="pickup">
+                            <div class="car-type-image">
+                                <img src="../assets/inmage/image copy 9.png" alt="Bán tải">
+                            </div>
+                            <div class="car-type-name">Bán tải</div>
+                        </div>
+
+                        <!-- Minivan -->
+                        <div class="car-type-item" data-type="minivan">
+                            <div class="car-type-image">
+                                <img src="../assets/inmage/image copy 10.png" alt="Minivan">
+                            </div>
+                            <div class="car-type-name">Minivan</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="applyCarType">Áp dụng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Hãng Xe -->
+    <div class="modal fade" id="carBrandModal" tabindex="-1" aria-labelledby="carBrandModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title w-100 text-center" id="carBrandModalLabel">Hãng xe</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="brand-grid-cards">
+                        <div class="brand-card-item" data-brand="toyota">
+                            <img src="../assets/inmage/image copy 11.png" alt="Toyota" class="brand-logo">
+                            <span class="brand-name">Toyota</span>
+                        </div>
+                        <div class="brand-card-item" data-brand="hyundai">
+                            <img src="../assets/inmage/image copy 12.png" alt="Hyundai" class="brand-logo">
+                            <span class="brand-name">Hyundai</span>
+                        </div>
+                        <div class="brand-card-item" data-brand="kia">
+                            <img src="../assets/inmage/image copy 13.png" alt="Kia" class="brand-logo">
+                            <span class="brand-name">Kia</span>
+                        </div>
+                        <div class="brand-card-item" data-brand="vinfast">
+                            <img src="../assets/inmage/image copy 14.png" alt="Vinfast" class="brand-logo">
+                            <span class="brand-name">Vinfast</span>
+                        </div>
+                        <div class="brand-card-item" data-brand="mitsubishi">
+                            <img src="../assets/inmage/image copy 15.png" alt="Mitsubishi" class="brand-logo">
+                            <span class="brand-name">Mitsubishi</span>
+                        </div>
+                        <div class="brand-card-item" data-brand="mazda">
+                            <img src="../assets/inmage/image copy 16.png" alt="Mazda" class="brand-logo">
+                            <span class="brand-name">Mazda</span>
+                        </div>
+                        <div class="brand-card-item" data-brand="ford">
+                            <img src="../assets/inmage/image copy 17.png" alt="Ford" class="brand-logo">
+                            <span class="brand-name">Ford</span>
+                        </div>
+                         <div class="brand-card-item" data-brand="honda">
+                            <img src="../assets/inmage/image copy 18.png" alt="Honda" class="brand-logo">
+                            <span class="brand-name">Honda</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-apply-full" id="applyCarBrand">Áp dụng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Truyền Động -->
+    <div class="modal fade" id="transmissionModal" tabindex="-1" aria-labelledby="transmissionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title w-100 text-center" id="transmissionModalLabel">Truyền động</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="transmission-list">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="transmissionOption" id="trans-option-all" value="all" checked>
+                            <label class="form-check-label" for="trans-option-all">Tất cả</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="transmissionOption" id="trans-option-auto" value="auto">
+                            <label class="form-check-label" for="trans-option-auto">Số tự động</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="transmissionOption" id="trans-option-manual" value="manual">
+                            <label class="form-check-label" for="trans-option-manual">Số sàn</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-apply-full" id="applyTransmission">Áp dụng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Bộ Lọc Nâng Cao -->
+    <div class="modal fade" id="advancedFilterModal" tabindex="-1" aria-labelledby="advancedFilterModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title w-100 text-center" id="advancedFilterModalLabel">Bộ lọc nâng cao</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Sắp xếp -->
+                    <div class="filter-group">
+                        <label class="filter-label">Sắp xếp</label>
+                        <select class="form-select">
+                            <option>Tối ưu</option>
+                            <option>Khoảng cách gần nhất</option>
+                            <option>Giá thấp nhất</option>
+                            <option>Giá cao nhất</option>
+                            <option>Đánh giá tốt nhất</option>
+                        </select>
+                    </div>
+
+                    <!-- Mức giá -->
+                    <div class="filter-group">
+                        <label class="filter-label">Mức giá</label>
+                        <input type="range" class="form-range" min="0" max="5000000" step="100000" value="0" data-unit="đ" id="price-range">
+                        <div class="range-value-display">Bất kì</div>
+                    </div>
+
+                    <!-- Truyền động -->
+                    <div class="filter-group">
+                        <label class="filter-label">Truyền động</label>
+                        <div class="d-flex">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="transmission" id="trans-all" value="all" checked>
+                                <label class="form-check-label" for="trans-all">Tất cả</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="transmission" id="trans-auto" value="auto">
+                                <label class="form-check-label" for="trans-auto">Số tự động</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="transmission" id="trans-manual" value="manual">
+                                <label class="form-check-label" for="trans-manual">Số sàn</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Khoảng cách -->
+                    <div class="filter-group">
+                        <label class="filter-label">Khoảng cách</label>
+                        <input type="range" class="form-range" min="0" max="200" step="5" value="0" data-unit="km" id="distance-range">
+                        <div class="range-value-display">Bất kì</div>
+                    </div>
+
+                    <!-- Số chỗ -->
+                    <div class="filter-group">
+                        <label class="filter-label">Số chỗ</label>
+                        <input type="range" class="form-range" min="2" max="16" step="1" value="2" id="seats-range">
+                        <div class="range-value-display">Bất kì</div>
+                    </div>
+
+                    <!-- Năm sản xuất -->
+                    <div class="filter-group">
+                        <label class="filter-label">Năm sản xuất</label>
+                        <input type="range" class="form-range" min="2000" max="2025" step="1" value="2000" id="year-range">
+                        <div class="range-value-display">Bất kì</div>
+                    </div>
+
+                    <!-- Phí đưa đón -->
+                    <div class="filter-group">
+                        <label class="filter-label">Phí đưa đón</label>
+                        <input type="range" class="form-range" min="0" max="500000" step="50000" value="0" data-unit="đ" id="delivery-fee-range">
+                        <div class="range-value-display">Miễn phí</div>
+                    </div>
+
+                    <!-- Nhiên liệu -->
+                    <div class="filter-group">
+                        <label class="filter-label">Nhiên liệu</label>
+                        <div class="d-flex flex-wrap">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="fuel" id="fuel-all" checked>
+                                <label class="form-check-label" for="fuel-all">Tất cả</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="fuel" id="fuel-xang">
+                                <label class="form-check-label" for="fuel-xang">Xăng</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="fuel" id="fuel-diesel">
+                                <label class="form-check-label" for="fuel-diesel">Dầu diesel</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="fuel" id="fuel-dien">
+                                <label class="form-check-label" for="fuel-dien">Điện</label>
+                            </div>
+                             <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="fuel" id="fuel-xangdien">
+                                <label class="form-check-label" for="fuel-xangdien">Xăng & điện</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mức tiêu thụ nhiên liệu -->
+                    <div class="filter-group">
+                        <label class="filter-label">Mức tiêu thụ nhiên liệu</label>
+                        <input type="range" class="form-range" min="0" max="25" step="1" value="25" id="fuel-consumption-range">
+                        <div class="range-value-display">Từ dưới 25L/100km</div>
+                    </div>
+
+                    <!-- Tính năng -->
+                    <div class="filter-group">
+                        <label class="filter-label">Tính năng</label>
+                        <div class="d-flex flex-wrap">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="feature-map">
+                                <label class="form-check-label" for="feature-map">Bản đồ</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="feature-bluetooth">
+                                <label class="form-check-label" for="feature-bluetooth">Bluetooth</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="checkbox" id="feature-camera360">
+                                <label class="form-check-label" for="feature-camera360">Camera 360</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer d-flex justify-content-end">
+                    <button type="button" class="btn btn-link" id="clearAdvancedFilter">Xóa bộ lọc</button>
+                    <button type="button" class="btn btn-apply" id="applyAdvancedFilter">Áp dụng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
