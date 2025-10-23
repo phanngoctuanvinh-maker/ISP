@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Quản lý Thuê Xe</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/sidebar.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="css/table.css">
+    <link rel="stylesheet" href="css/modal.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h2>🚗 CarRental</h2>
+                <p>Hệ thống quản lý</p>
+            </div>
+            <div class="menu-item active" data-page="dashboard">
+                <span>🏠</span>
+                <span>Dashboard</span>
+            </div>
+            <div class="menu-item" data-page="vehicles">
+                <span>🚘</span>
+                <span>Quản lý xe</span>
+            </div>
+            <div class="menu-item" data-page="customers">
+                <span>👥</span>
+                <span>Khách hàng</span>
+            </div>
+            <div class="menu-item" data-page="orders">
+                <span>📅</span>
+                <span>Đơn thuê</span>
+            </div>
+            <div class="menu-item" data-page="payments">
+                <span>💰</span>
+                <span>Thanh toán</span>
+            </div>
+            <div class="menu-item" data-page="coupons">
+                <span>🎁</span>
+                <span>Mã giảm giá</span>
+            </div>
+            
+            <!-- Logout Button -->
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar-sidebar">AD</div>
+                    <div class="user-details">
+                        <strong>Admin</strong>
+                        <span>admin@carrental.com</span>
+                    </div>
+                </div>
+                <button class="logout-btn" onclick="handleLogout()">
+                    <span>🚪</span>
+                    <span>Đăng xuất</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Nội dung sẽ được load động từ các file page -->
+        </div>
+    </div>
+
+    <!-- JavaScript Files - Load in correct order -->
+    <script src="js/utils.js"></script>
+    <script src="data/sample-data.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/vehicles.js"></script>
+    <script src="js/customers.js"></script>
+    <script src="js/orders.js"></script>
+    <script src="js/payments.js"></script>
+    <script src="js/coupons.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
