@@ -1,11 +1,47 @@
-// Coupons Page Logic
+// Coupons Page Logic - WITH API INTEGRATION
 const CouponsPage = {
-    coupons: [...SampleData.coupons],
+    coupons: [],
     filteredCoupons: [],
+    isLoading: false,
     
-    render(container) {
-        this.filteredCoupons = [...this.coupons];
-        
+    async render(container) {
+        container.innerHTML = this.renderSkeleton();
+        await this.loadCoupons();
+        this.renderContent(container);
+    },
+    
+    renderSkeleton() {
+        return `
+            <div class="header">
+                <h1>Quản lý mã giảm giá</h1>
+                <button class="btn btn-primary" disabled>
+                    ⏳ Đang tải...
+                </button>
+            </div>
+            <div style="text-align: center; padding: 40px;">
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        `;
+    },
+    
+    async loadCoupons() {
+        this.isLoading = true;
+        try {
+            const response = await API.coupons.getAll();
+            this.coupons = response.data || response;
+            this.filteredCoupons = [...this.coupons];
+        } catch (error) {
+            console.error('Error loading coupons:', error);
+            showNotification('Không thể tải danh sách mã giảm giá: ' + error.message, 'error');
+            // Fallback to mock data
+            this.coupons = SampleData.coupons || [];
+            this.filteredCoupons = [...this.coupons];
+        } finally {
+            this.isLoading = false;
+        }
+    },
+    
+    renderContent(container) {
         container.innerHTML = `
             <div class="header">
                 <h1>Quản lý mã giảm giá</h1>
@@ -141,7 +177,7 @@ const CouponsPage = {
                             <label>Số lượng mã *</label>
                             <input type="number" id="couponQuantity" required placeholder="VD: 100">
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Tạo mã giảm giá</button>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;" id="couponSubmitBtn">Tạo mã giảm giá</button>
                     </form>
                 </div>
             </div>
@@ -188,60 +224,76 @@ const CouponsPage = {
         openModal('couponModal');
     },
     
-    saveCoupon() {
-        const id = document.getElementById('couponId').value;
-        const code = document.getElementById('couponCode').value.toUpperCase();
+    async saveCoupon() {
+        const submitBtn = document.getElementById('couponSubmitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang lưu...';
         
-        // Check if code already exists (for new coupons)
-        if (!id && this.coupons.some(c => c.code === code)) {
-            showNotification('Mã giảm giá đã tồn tại!', 'error');
-            return;
-        }
-        
-        const couponData = {
-            id: id || generateId(),
-            code: code,
-            description: document.getElementById('couponDescription').value,
-            type: document.getElementById('couponType').value,
-            value: parseFloat(document.getElementById('couponValue').value),
-            minAmount: parseFloat(document.getElementById('couponMinAmount').value),
-            startDate: document.getElementById('couponStartDate').value,
-            endDate: document.getElementById('couponEndDate').value,
-            quantity: parseInt(document.getElementById('couponQuantity').value),
-            used: id ? this.coupons.find(c => c.id === id).used : 0,
-            status: 'active'
-        };
-        
-        // Validate dates
-        if (new Date(couponData.startDate) > new Date(couponData.endDate)) {
-            showNotification('Ngày bắt đầu không được lớn hơn ngày hết hạn!', 'error');
-            return;
-        }
-        
-        if (id) {
-            // Update existing coupon
-            const index = this.coupons.findIndex(c => c.id === id);
-            if (index !== -1) {
-                this.coupons[index] = couponData;
-                showNotification('Cập nhật mã giảm giá thành công!', 'success');
+        try {
+            const id = document.getElementById('couponId').value;
+            const code = document.getElementById('couponCode').value.toUpperCase();
+            
+            // Check if code already exists (for new coupons)
+            if (!id && this.coupons.some(c => c.code === code)) {
+                showNotification('Mã giảm giá đã tồn tại!', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Tạo mã giảm giá';
+                return;
             }
-        } else {
-            // Add new coupon
-            this.coupons.push(couponData);
-            showNotification('Thêm mã giảm giá mới thành công!', 'success');
+            
+            const couponData = {
+                code: code,
+                description: document.getElementById('couponDescription').value,
+                type: document.getElementById('couponType').value,
+                value: parseFloat(document.getElementById('couponValue').value),
+                minAmount: parseFloat(document.getElementById('couponMinAmount').value),
+                startDate: document.getElementById('couponStartDate').value,
+                endDate: document.getElementById('couponEndDate').value,
+                quantity: parseInt(document.getElementById('couponQuantity').value)
+            };
+            
+            // Validate dates
+            if (new Date(couponData.startDate) > new Date(couponData.endDate)) {
+                showNotification('Ngày bắt đầu không được lớn hơn ngày hết hạn!', 'error');
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Tạo mã giảm giá';
+                return;
+            }
+            
+            if (id) {
+                // Update coupon qua API nếu có
+                if (API.coupons && API.coupons.update) {
+                    await API.coupons.update(id, couponData);
+                    showNotification('Cập nhật mã giảm giá thành công!', 'success');
+                }
+            } else {
+                // Tạo mới coupon qua API nếu có
+                if (API.coupons && API.coupons.create) {
+                    await API.coupons.create(couponData);
+                    showNotification('Thêm mã giảm giá mới thành công!', 'success');
+                }
+            }
+            closeModal('couponModal');
+            await this.loadCoupons();
+        } catch (error) {
+            showNotification('Lưu mã giảm giá thất bại: ' + error.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = id ? 'Cập nhật mã giảm giá' : 'Tạo mã giảm giá';
         }
-        
-        closeModal('couponModal');
-        this.filteredCoupons = [...this.coupons];
-        document.getElementById('couponTableBody').innerHTML = this.renderCouponRows();
     },
     
-    deleteCoupon(id) {
-        confirmDialog('Bạn có chắc chắn muốn xóa mã giảm giá này?', () => {
-            this.coupons = this.coupons.filter(c => c.id !== id);
-            this.filteredCoupons = [...this.coupons];
-            document.getElementById('couponTableBody').innerHTML = this.renderCouponRows();
-            showNotification('Xóa mã giảm giá thành công!', 'success');
+    async deleteCoupon(id) {
+        confirmDialog('Bạn có chắc chắn muốn xóa mã giảm giá này?', async () => {
+            try {
+                if (API.coupons && API.coupons.delete) {
+                    await API.coupons.delete(id);
+                    showNotification('Xóa mã giảm giá thành công!', 'success');
+                    await this.loadCoupons();
+                }
+            } catch (error) {
+                showNotification('Xóa mã giảm giá thất bại: ' + error.message, 'error');
+            }
         });
     }
 };

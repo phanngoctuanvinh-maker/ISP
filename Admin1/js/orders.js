@@ -1,11 +1,44 @@
-// Orders Page Logic
+// Orders Page Logic - WITH API INTEGRATION
 const OrdersPage = {
-    orders: [...SampleData.orders],
+    orders: [],
     filteredOrders: [],
+    isLoading: false,
     
-    render(container) {
-        this.filteredOrders = [...this.orders];
-        
+    async render(container) {
+        container.innerHTML = this.renderSkeleton();
+        await this.loadOrders();
+        this.renderContent(container);
+    },
+    
+    renderSkeleton() {
+        return `
+            <div class="header">
+                <h1>Quản lý đơn thuê</h1>
+            </div>
+            <div style="text-align: center; padding: 40px;">
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        `;
+    },
+    
+    async loadOrders() {
+        this.isLoading = true;
+        try {
+            const response = await API.orders.getAll();
+            this.orders = response.data || response;
+            this.filteredOrders = [...this.orders];
+        } catch (error) {
+            console.error('Error loading orders:', error);
+            showNotification('Không thể tải danh sách đơn hàng: ' + error.message, 'error');
+            // Fallback to mock data
+            this.orders = SampleData.orders || [];
+            this.filteredOrders = [...this.orders];
+        } finally {
+            this.isLoading = false;
+        }
+    },
+    
+    renderContent(container) {
         container.innerHTML = `
             <div class="header">
                 <h1>Quản lý đơn thuê</h1>
@@ -157,58 +190,69 @@ const OrdersPage = {
         document.getElementById('orderTableBody').innerHTML = this.renderOrderRows();
     },
     
-    viewDetails(id) {
-        const order = this.orders.find(o => o.id === id);
-        if (!order) return;
-        
-        const customer = SampleData.customers.find(c => c.id === order.customerId);
-        const vehicle = SampleData.vehicles.find(v => v.id === order.vehicleId);
-        
-        const days = Math.ceil((new Date(order.endDate) - new Date(order.startDate)) / (1000 * 60 * 60 * 24));
-        
-        const detailContent = `
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: #2c3e50; margin-bottom: 15px;">Thông tin đơn hàng</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div><strong>Mã đơn:</strong> ${order.id}</div>
-                    <div><strong>Trạng thái:</strong> ${this.getStatusBadge(order.status)}</div>
-                    <div><strong>Ngày thuê:</strong> ${formatDate(order.startDate)}</div>
-                    <div><strong>Ngày trả:</strong> ${formatDate(order.endDate)}</div>
-                    <div><strong>Số ngày thuê:</strong> ${days} ngày</div>
-                    <div><strong>Tổng tiền:</strong> ${formatCurrency(order.totalAmount)}</div>
-                </div>
-            </div>
+    async viewDetails(id) {
+        try {
+            let order;
+            try {
+                const response = await API.orders.getById(id);
+                order = response.data || response;
+            } catch (error) {
+                order = this.orders.find(o => o.id === id);
+            }
             
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: #2c3e50; margin-bottom: 15px;">Thông tin khách hàng</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div><strong>Họ tên:</strong> ${customer ? customer.name : 'N/A'}</div>
-                    <div><strong>Số điện thoại:</strong> ${customer ? customer.phone : 'N/A'}</div>
-                    <div><strong>Email:</strong> ${customer ? customer.email : 'N/A'}</div>
-                    <div><strong>CCCD:</strong> ${customer ? customer.idCard : 'N/A'}</div>
-                </div>
-            </div>
+            if (!order) return;
             
-            <div style="margin-bottom: 20px;">
-                <h3 style="color: #2c3e50; margin-bottom: 15px;">Thông tin xe</h3>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <div><strong>Tên xe:</strong> ${vehicle ? vehicle.name : 'N/A'}</div>
-                    <div><strong>Loại xe:</strong> ${vehicle ? vehicle.type : 'N/A'}</div>
-                    <div><strong>Biển số:</strong> ${vehicle ? vehicle.plateNumber : 'N/A'}</div>
-                    <div><strong>Giá thuê/ngày:</strong> ${vehicle ? formatCurrency(vehicle.pricePerDay) : 'N/A'}</div>
-                </div>
-            </div>
+            const customer = SampleData.customers.find(c => c.id === order.customerId);
+            const vehicle = SampleData.vehicles.find(v => v.id === order.vehicleId);
             
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 20px;">
-                <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold;">
-                    <span>Tổng thanh toán:</span>
-                    <span style="color: #e74c3c;">${formatCurrency(order.totalAmount)}</span>
+            const days = Math.ceil((new Date(order.endDate) - new Date(order.startDate)) / (1000 * 60 * 60 * 24));
+            
+            const detailContent = `
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">Thông tin đơn hàng</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div><strong>Mã đơn:</strong> ${order.id}</div>
+                        <div><strong>Trạng thái:</strong> ${this.getStatusBadge(order.status)}</div>
+                        <div><strong>Ngày thuê:</strong> ${formatDate(order.startDate)}</div>
+                        <div><strong>Ngày trả:</strong> ${formatDate(order.endDate)}</div>
+                        <div><strong>Số ngày thuê:</strong> ${days} ngày</div>
+                        <div><strong>Tổng tiền:</strong> ${formatCurrency(order.totalAmount)}</div>
+                    </div>
                 </div>
-            </div>
-        `;
-        
-        document.getElementById('orderDetailContent').innerHTML = detailContent;
-        openModal('orderDetailModal');
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">Thông tin khách hàng</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div><strong>Họ tên:</strong> ${customer ? customer.name : order.customerName}</div>
+                        <div><strong>Số điện thoại:</strong> ${customer ? customer.phone : 'N/A'}</div>
+                        <div><strong>Email:</strong> ${customer ? customer.email : 'N/A'}</div>
+                        <div><strong>CCCD:</strong> ${customer ? customer.idCard : 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div style="margin-bottom: 20px;">
+                    <h3 style="color: #2c3e50; margin-bottom: 15px;">Thông tin xe</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div><strong>Tên xe:</strong> ${vehicle ? vehicle.name : 'N/A'}</div>
+                        <div><strong>Loại xe:</strong> ${vehicle ? vehicle.type : 'N/A'}</div>
+                        <div><strong>Biển số:</strong> ${vehicle ? vehicle.plateNumber : 'N/A'}</div>
+                        <div><strong>Giá thuê/ngày:</strong> ${vehicle ? formatCurrency(vehicle.pricePerDay) : 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin-top: 20px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 18px; font-weight: bold;">
+                        <span>Tổng thanh toán:</span>
+                        <span style="color: #e74c3c;">${formatCurrency(order.totalAmount)}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('orderDetailContent').innerHTML = detailContent;
+            openModal('orderDetailModal');
+        } catch (error) {
+            showNotification('Không thể tải chi tiết đơn hàng: ' + error.message, 'error');
+        }
     },
     
     approveOrder(id) {

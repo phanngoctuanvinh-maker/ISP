@@ -1,11 +1,48 @@
-// Vehicles Page Logic
+// Vehicles Page Logic - WITH API INTEGRATION
 const VehiclesPage = {
-    vehicles: [...SampleData.vehicles],
+    vehicles: [],
     filteredVehicles: [],
+    isLoading: false,
     
-    render(container) {
-        this.filteredVehicles = [...this.vehicles];
-        
+    async render(container) {
+        container.innerHTML = this.renderSkeleton();
+        await this.loadVehicles();
+        this.renderContent(container);
+    },
+    
+    renderSkeleton() {
+        return `
+            <div class="header">
+                <h1>Quản lý xe</h1>
+                <button class="btn btn-primary" disabled>
+                    ⏳ Đang tải...
+                </button>
+            </div>
+            <div style="text-align: center; padding: 40px;">
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        `;
+    },
+    
+    async loadVehicles() {
+        this.isLoading = true;
+        try {
+            // Gọi API lấy danh sách xe
+            const response = await API.vehicles.getAll();
+            this.vehicles = response.data || response;
+            this.filteredVehicles = [...this.vehicles];
+        } catch (error) {
+            console.error('Error loading vehicles:', error);
+            showNotification('Không thể tải danh sách xe: ' + error.message, 'error');
+            // Fallback to mock data if API fails
+            this.vehicles = SampleData.vehicles || [];
+            this.filteredVehicles = [...this.vehicles];
+        } finally {
+            this.isLoading = false;
+        }
+    },
+    
+    renderContent(container) {
         container.innerHTML = `
             <div class="header">
                 <h1>Quản lý xe</h1>
@@ -76,9 +113,10 @@ const VehiclesPage = {
         return this.filteredVehicles.map(vehicle => `
             <tr>
                 <td>
-                    <div class="car-image" style="background:#ddd; display:flex; align-items:center; justify-content:center; font-size:24px;">
-                        ${vehicle.image}
-                    </div>
+                    ${vehicle.imageUrl ? 
+                        `<img src="${vehicle.imageUrl}" class="car-image" alt="${vehicle.name}">` :
+                        `<div class="car-image" style="background:#ddd; display:flex; align-items:center; justify-content:center; font-size:24px;">${vehicle.image || '🚗'}</div>`
+                    }
                 </td>
                 <td>${vehicle.name}</td>
                 <td>${vehicle.brand}</td>
@@ -167,7 +205,11 @@ const VehiclesPage = {
                                 <option value="broken">Hỏng</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">Lưu xe</button>
+                        <div class="form-group">
+                            <label>Hình ảnh xe</label>
+                            <input type="file" id="vehicleImage" accept="image/*">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%;" id="submitBtn">Lưu xe</button>
                     </form>
                 </div>
             </div>
@@ -175,7 +217,6 @@ const VehiclesPage = {
     },
     
     attachEventListeners() {
-        // Search
         const searchInput = document.getElementById('vehicleSearch');
         if (searchInput) {
             searchInput.addEventListener('input', debounce((e) => {
@@ -183,7 +224,6 @@ const VehiclesPage = {
             }, 300));
         }
         
-        // Filters
         const typeFilter = document.getElementById('typeFilter');
         const statusFilter = document.getElementById('statusFilter');
         
@@ -195,7 +235,6 @@ const VehiclesPage = {
             statusFilter.addEventListener('change', () => this.filterVehicles());
         }
         
-        // Form submit
         const form = document.getElementById('vehicleForm');
         if (form) {
             form.addEventListener('submit', (e) => {
@@ -249,42 +288,64 @@ const VehiclesPage = {
         openModal('vehicleModal');
     },
     
-    saveVehicle() {
-        const id = document.getElementById('vehicleId').value;
-        const vehicleData = {
-            id: id || generateId(),
-            name: document.getElementById('vehicleName').value,
-            brand: document.getElementById('vehicleBrand').value,
-            type: document.getElementById('vehicleType').value,
-            seats: parseInt(document.getElementById('vehicleSeats').value),
-            plateNumber: document.getElementById('vehiclePlateNumber').value,
-            pricePerDay: parseInt(document.getElementById('vehiclePrice').value),
-            status: document.getElementById('vehicleStatus').value,
-            image: '🚗'
-        };
+    async saveVehicle() {
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Đang lưu...';
         
-        if (id) {
-            // Update existing vehicle
-            const index = this.vehicles.findIndex(v => v.id === id);
-            if (index !== -1) {
-                this.vehicles[index] = vehicleData;
+        try {
+            const id = document.getElementById('vehicleId').value;
+            const vehicleData = {
+                name: document.getElementById('vehicleName').value,
+                brand: document.getElementById('vehicleBrand').value,
+                type: document.getElementById('vehicleType').value,
+                seats: parseInt(document.getElementById('vehicleSeats').value),
+                plateNumber: document.getElementById('vehiclePlateNumber').value,
+                pricePerDay: parseInt(document.getElementById('vehiclePrice').value),
+                status: document.getElementById('vehicleStatus').value
+            };
+            
+            let result;
+            if (id) {
+                // Update existing vehicle
+                result = await API.vehicles.update(id, vehicleData);
                 showNotification('Cập nhật xe thành công!', 'success');
+            } else {
+                // Add new vehicle
+                result = await API.vehicles.create(vehicleData);
+                showNotification('Thêm xe mới thành công!', 'success');
             }
-        } else {
-            // Add new vehicle
-            this.vehicles.push(vehicleData);
-            showNotification('Thêm xe mới thành công!', 'success');
+            
+            // Upload image if selected
+            const imageFile = document.getElementById('vehicleImage').files[0];
+            if (imageFile && result.id) {
+                await API.vehicles.uploadImage(result.id, imageFile);
+            }
+            
+            closeModal('vehicleModal');
+            await this.loadVehicles();
+            this.filterVehicles();
+            
+        } catch (error) {
+            console.error('Error saving vehicle:', error);
+            showNotification('Lỗi: ' + error.message, 'error');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Lưu xe';
         }
-        
-        closeModal('vehicleModal');
-        this.filterVehicles();
     },
     
-    deleteVehicle(id) {
-        confirmDialog('Bạn có chắc chắn muốn xóa xe này?', () => {
-            this.vehicles = this.vehicles.filter(v => v.id !== id);
-            this.filterVehicles();
-            showNotification('Xóa xe thành công!', 'success');
+    async deleteVehicle(id) {
+        confirmDialog('Bạn có chắc chắn muốn xóa xe này?', async () => {
+            try {
+                await API.vehicles.delete(id);
+                showNotification('Xóa xe thành công!', 'success');
+                await this.loadVehicles();
+                this.filterVehicles();
+            } catch (error) {
+                console.error('Error deleting vehicle:', error);
+                showNotification('Lỗi: ' + error.message, 'error');
+            }
         });
     }
 };

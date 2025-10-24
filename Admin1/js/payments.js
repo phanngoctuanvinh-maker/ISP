@@ -1,11 +1,44 @@
-// Payments Page Logic
+// Payments Page Logic - WITH API INTEGRATION
 const PaymentsPage = {
-    payments: [...SampleData.payments],
+    payments: [],
     filteredPayments: [],
+    isLoading: false,
     
-    render(container) {
-        this.filteredPayments = [...this.payments];
-        
+    async render(container) {
+        container.innerHTML = this.renderSkeleton();
+        await this.loadPayments();
+        this.renderContent(container);
+    },
+    
+    renderSkeleton() {
+        return `
+            <div class="header">
+                <h1>Quản lý thanh toán</h1>
+            </div>
+            <div style="text-align: center; padding: 40px;">
+                <p>Đang tải dữ liệu...</p>
+            </div>
+        `;
+    },
+    
+    async loadPayments() {
+        this.isLoading = true;
+        try {
+            const response = await API.payments.getAll();
+            this.payments = response.data || response;
+            this.filteredPayments = [...this.payments];
+        } catch (error) {
+            console.error('Error loading payments:', error);
+            showNotification('Không thể tải danh sách thanh toán: ' + error.message, 'error');
+            // Fallback to mock data
+            this.payments = SampleData.payments || [];
+            this.filteredPayments = [...this.payments];
+        } finally {
+            this.isLoading = false;
+        }
+    },
+    
+    renderContent(container) {
         container.innerHTML = `
             <div class="header">
                 <h1>Quản lý thanh toán</h1>
@@ -144,14 +177,16 @@ const PaymentsPage = {
         document.getElementById('paymentTableBody').innerHTML = this.renderPaymentRows();
     },
     
-    confirmPayment(id) {
-        confirmDialog('Xác nhận khách hàng đã thanh toán?', () => {
-            const payment = this.payments.find(p => p.id === id);
-            if (payment) {
-                payment.status = 'paid';
-                payment.date = new Date().toISOString().split('T')[0];
+    async confirmPayment(id) {
+        confirmDialog('Xác nhận khách hàng đã thanh toán?', async () => {
+            try {
+                await API.payments.confirm(id);
+                await this.loadPayments();
                 this.filterPayments();
                 showNotification('Xác nhận thanh toán thành công!', 'success');
+            } catch (error) {
+                console.error('Error confirming payment:', error);
+                showNotification('Lỗi: ' + error.message, 'error');
             }
         });
     },
