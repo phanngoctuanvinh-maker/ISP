@@ -228,11 +228,9 @@ const CouponsPage = {
         const submitBtn = document.getElementById('couponSubmitBtn');
         submitBtn.disabled = true;
         submitBtn.textContent = 'Đang lưu...';
-        
         try {
             const id = document.getElementById('couponId').value;
             const code = document.getElementById('couponCode').value.toUpperCase();
-            
             // Check if code already exists (for new coupons)
             if (!id && this.coupons.some(c => c.code === code)) {
                 showNotification('Mã giảm giá đã tồn tại!', 'error');
@@ -240,7 +238,6 @@ const CouponsPage = {
                 submitBtn.textContent = 'Tạo mã giảm giá';
                 return;
             }
-            
             const couponData = {
                 code: code,
                 description: document.getElementById('couponDescription').value,
@@ -251,32 +248,27 @@ const CouponsPage = {
                 endDate: document.getElementById('couponEndDate').value,
                 quantity: parseInt(document.getElementById('couponQuantity').value)
             };
-            
             // Validate dates
             if (new Date(couponData.startDate) > new Date(couponData.endDate)) {
                 showNotification('Ngày bắt đầu không được lớn hơn ngày hết hạn!', 'error');
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Tạo mã giảm giá';
+                submitBtn.textContent = id ? 'Cập nhật mã giảm giá' : 'Tạo mã giảm giá';
                 return;
             }
-            
             if (id) {
-                // Update coupon qua API nếu có
-                if (API.coupons && API.coupons.update) {
-                    await API.coupons.update(id, couponData);
-                    showNotification('Cập nhật mã giảm giá thành công!', 'success');
-                }
+                await API.coupons.update(id, couponData);
+                showNotification('Cập nhật mã giảm giá thành công!', 'success');
             } else {
-                // Tạo mới coupon qua API nếu có
-                if (API.coupons && API.coupons.create) {
-                    await API.coupons.create(couponData);
-                    showNotification('Thêm mã giảm giá mới thành công!', 'success');
-                }
+                await API.coupons.create(couponData);
+                showNotification('Thêm mã giảm giá mới thành công!', 'success');
             }
             closeModal('couponModal');
             await this.loadCoupons();
+            this.filteredCoupons = [...this.coupons];
+            document.getElementById('couponTableBody').innerHTML = this.renderCouponRows();
         } catch (error) {
-            showNotification('Lưu mã giảm giá thất bại: ' + error.message, 'error');
+            console.error('Error saving coupon:', error);
+            showNotification('Lỗi: ' + error.message, 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.textContent = id ? 'Cập nhật mã giảm giá' : 'Tạo mã giảm giá';
@@ -286,14 +278,16 @@ const CouponsPage = {
     async deleteCoupon(id) {
         confirmDialog('Bạn có chắc chắn muốn xóa mã giảm giá này?', async () => {
             try {
-                if (API.coupons && API.coupons.delete) {
-                    await API.coupons.delete(id);
-                    showNotification('Xóa mã giảm giá thành công!', 'success');
-                    await this.loadCoupons();
-                }
+                await API.coupons.delete(id);
+                showNotification('Xóa mã giảm giá thành công!', 'success');
+                await this.loadCoupons();
+                this.filteredCoupons = [...this.coupons];
+                document.getElementById('couponTableBody').innerHTML = this.renderCouponRows();
             } catch (error) {
-                showNotification('Xóa mã giảm giá thất bại: ' + error.message, 'error');
+                console.error('Error deleting coupon:', error);
+                showNotification('Lỗi: ' + error.message, 'error');
             }
         });
     }
-};
+};// Coupons Page Logic
+/* Duplicate CouponsPage declaration removed — the API-backed CouponsPage defined earlier is used. */

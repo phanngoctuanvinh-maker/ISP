@@ -30,9 +30,9 @@ const PaymentsPage = {
         } catch (error) {
             console.error('Error loading payments:', error);
             showNotification('Không thể tải danh sách thanh toán: ' + error.message, 'error');
-            // Fallback to mock data
-            this.payments = SampleData.payments || [];
-            this.filteredPayments = [...this.payments];
+             // Fallback to mock data
+            // this.payments = SampleData.payments || [];
+            // this.filteredPayments = [...this.payments];
         } finally {
             this.isLoading = false;
         }

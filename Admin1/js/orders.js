@@ -31,8 +31,8 @@ const OrdersPage = {
             console.error('Error loading orders:', error);
             showNotification('Không thể tải danh sách đơn hàng: ' + error.message, 'error');
             // Fallback to mock data
-            this.orders = SampleData.orders || [];
-            this.filteredOrders = [...this.orders];
+            // this.orders = SampleData.orders || [];
+            // this.filteredOrders = [...this.orders];
         } finally {
             this.isLoading = false;
         }

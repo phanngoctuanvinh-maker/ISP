@@ -34,9 +34,9 @@ const VehiclesPage = {
         } catch (error) {
             console.error('Error loading vehicles:', error);
             showNotification('Không thể tải danh sách xe: ' + error.message, 'error');
-            // Fallback to mock data if API fails
-            this.vehicles = SampleData.vehicles || [];
-            this.filteredVehicles = [...this.vehicles];
+            // // Fallback to mock data if API fails
+            // this.vehicles = SampleData.vehicles || [];
+            // this.filteredVehicles = [...this.vehicles];
         } finally {
             this.isLoading = false;
         }

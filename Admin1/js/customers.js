@@ -1,4 +1,4 @@
-// Customers Page Logic - WITH API INTEGRATION
+// Customers Page Logic - PURE API (NO MOCK DATA)
 const CustomersPage = {
     customers: [],
     filteredCustomers: [],
@@ -6,8 +6,13 @@ const CustomersPage = {
     
     async render(container) {
         container.innerHTML = this.renderSkeleton();
-        await this.loadCustomers();
-        this.renderContent(container);
+        
+        try {
+            await this.loadCustomers();
+            this.renderContent(container);
+        } catch (error) {
+            container.innerHTML = `<div style="color: red; padding: 20px;">Lỗi: ${error.message}</div>`;
+        }
     },
     
     renderSkeleton() {
@@ -30,9 +35,8 @@ const CustomersPage = {
         } catch (error) {
             console.error('Error loading customers:', error);
             showNotification('Không thể tải danh sách khách hàng: ' + error.message, 'error');
-            // Fallback to mock data
-            this.customers = SampleData.customers || [];
-            this.filteredCustomers = [...this.customers];
+            this.customers = [];
+            this.filteredCustomers = [];
         } finally {
             this.isLoading = false;
         }
@@ -156,8 +160,7 @@ const CustomersPage = {
                 const response = await API.customers.getRentalHistory(id);
                 customerOrders = response.data || response;
             } catch (error) {
-                // Fallback to mock data
-                customerOrders = SampleData.orders.filter(o => o.customerId === id);
+                customerOrders = [];
             }
             
             const detailContent = `

@@ -1,9 +1,55 @@
-// Dashboard Page Logic
+// Dashboard Page Logic - PURE API (NO MOCK DATA)
 const DashboardPage = {
-    render(container) {
-        const stats = SampleData.stats;
-        const recentOrders = SampleData.orders.slice(0, 5);
+    async render(container) {
+        container.innerHTML = this.renderSkeleton();
         
+        try {
+            const stats = await API.dashboard.getStats();
+            const recentOrders = await API.dashboard.getRecentOrders(5);
+            
+            this.renderContent(container, stats.data || stats, recentOrders.data || recentOrders);
+            await this.initCharts(stats.data || stats);
+        } catch (error) {
+            container.innerHTML = this.renderError('Không thể tải dữ liệu Dashboard. Vui lòng kiểm tra kết nối API.');
+            console.error('Dashboard Error:', error);
+        }
+    },
+    
+    renderSkeleton() {
+        return `
+            <div class="header">
+                <h1>Dashboard</h1>
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <span>Admin</span>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 48px; margin-bottom: 20px;">⏳</div>
+                <p style="font-size: 18px; color: #7f8c8d;">Đang tải dữ liệu...</p>
+            </div>
+        `;
+    },
+    
+    renderError(message) {
+        return `
+            <div class="header">
+                <h1>Dashboard</h1>
+                <div class="user-info">
+                    <div class="user-avatar">AD</div>
+                    <span>Admin</span>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 60px 20px;">
+                <div style="font-size: 64px; margin-bottom: 20px;">⚠️</div>
+                <h2 style="color: #e74c3c; margin-bottom: 15px;">Lỗi tải dữ liệu</h2>
+                <p style="color: #7f8c8d; margin-bottom: 25px;">${message}</p>
+                <button class="btn btn-primary" onclick="location.reload()">🔄 Tải lại trang</button>
+            </div>
+        `;
+    },
+    
+    renderContent(container, stats, recentOrders) {
         container.innerHTML = `
             <div class="header">
                 <h1>Dashboard</h1>
@@ -17,28 +63,28 @@ const DashboardPage = {
                 <div class="stat-card">
                     <div class="stat-icon blue">🚗</div>
                     <div class="stat-info">
-                        <h3>${stats.totalVehicles}</h3>
+                        <h3>${stats.totalVehicles || 0}</h3>
                         <p>Tổng số xe</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon green">✅</div>
                     <div class="stat-info">
-                        <h3>${stats.rentedVehicles}</h3>
+                        <h3>${stats.rentedVehicles || 0}</h3>
                         <p>Xe đang cho thuê</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon orange">📅</div>
                     <div class="stat-info">
-                        <h3>${stats.ordersThisMonth}</h3>
+                        <h3>${stats.ordersThisMonth || 0}</h3>
                         <p>Đơn thuê tháng này</p>
                     </div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon purple">💰</div>
                     <div class="stat-info">
-                        <h3>${(stats.revenueThisMonth / 1000000).toFixed(1)}M</h3>
+                        <h3>${((stats.revenueThisMonth || 0) / 1000000).toFixed(1)}M</h3>
                         <p>Doanh thu tháng này</p>
                     </div>
                 </div>
@@ -76,11 +122,19 @@ const DashboardPage = {
                 </table>
             </div>
         `;
-        
-        this.initCharts();
     },
     
     renderRecentOrders(orders) {
+        if (!orders || orders.length === 0) {
+            return `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #7f8c8d;">
+                        Chưa có đơn hàng nào
+                    </td>
+                </tr>
+            `;
+        }
+        
         return orders.map(order => `
             <tr>
                 <td>${order.id}</td>
@@ -103,74 +157,86 @@ const DashboardPage = {
         return statusMap[status] || status;
     },
     
-    initCharts() {
-        // Revenue Chart
-        const revenueCtx = document.getElementById('revenueChart');
-        if (revenueCtx) {
-            new Chart(revenueCtx.getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: ['Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10'],
-                    datasets: [{
-                        label: 'Doanh thu (triệu đồng)',
-                        data: [32, 38, 42, 45, 48, 45.2],
-                        borderColor: '#3498db',
-                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'bottom'
-                        }
+    async initCharts(stats) {
+        try {
+            // Load revenue chart data from API
+            const revenueResponse = await API.dashboard.getRevenueChart('6months');
+            const revenueData = revenueResponse.data || revenueResponse;
+            
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx.getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels: revenueData.labels || [],
+                        datasets: [{
+                            label: 'Doanh thu (triệu đồng)',
+                            data: revenueData.data || [],
+                            borderColor: '#3498db',
+                            backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                            tension: 0.4,
+                            fill: true
+                        }]
                     },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            ticks: {
-                                callback: function(value) {
-                                    return value + 'M';
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                position: 'bottom'
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + 'M';
+                                    }
                                 }
                             }
                         }
                     }
-                }
-            });
-        }
+                });
+            }
 
-        // Status Chart
-        const statusCtx = document.getElementById('statusChart');
-        if (statusCtx) {
-            new Chart(statusCtx.getContext('2d'), {
-                type: 'doughnut',
-                data: {
-                    labels: ['Khả dụng', 'Đang thuê', 'Bảo trì', 'Hỏng'],
-                    datasets: [{
-                        data: [28, 12, 3, 2],
-                        backgroundColor: [
-                            '#2ecc71',
-                            '#3498db',
-                            '#f39c12',
-                            '#e74c3c'
-                        ],
-                        borderWidth: 0
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
+            // Load vehicle status from API
+            const statusResponse = await API.dashboard.getVehicleStatus();
+            const vehicleStatus = statusResponse.data || statusResponse;
+
+            // Status Chart
+            const statusCtx = document.getElementById('statusChart');
+            if (statusCtx) {
+                new Chart(statusCtx.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: vehicleStatus.labels || [],
+                        datasets: [{
+                            data: vehicleStatus.data || [],
+                            backgroundColor: [
+                                '#2ecc71',
+                                '#3498db',
+                                '#f39c12',
+                                '#e74c3c'
+                            ],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
+        } catch (error) {
+            console.error('Error loading charts:', error);
         }
     }
 };
