@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-DrivenowApplication",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.carrentleproject.drivenow.DrivenowApplication",
+            "projectName": "drivenow",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

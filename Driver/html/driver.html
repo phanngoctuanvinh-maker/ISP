@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DriveNow - Driver Panel</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100..900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/driver.css">
+</head>
+<body>
+  <div class="layout">
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="top-bar-content">
+        <div class="logo-section">
+          <i class="bi bi-car-front-fill"></i>
+          <span class="brand-name">DriveNow - Driver Panel</span>
+        </div>
+        <div class="top-bar-right">
+          <div class="notification-icon">
+            <i class="bi bi-bell-fill"></i>
+            <span class="notification-badge">3</span>
+          </div>
+          <div class="user-info">
+            <i class="bi bi-person-circle"></i>
+            <span class="driver-name">Tài xế A</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+      <!-- SIDEBAR -->
+      <aside class="sidebar">
+        <nav class="nav flex-column">
+          <a class="nav-link active" href="driver.html">
+            <i class="bi bi-speedometer2"></i>
+            <span>Dashboard</span>
+          </a>
+          <a class="nav-link" href="trip.html">
+            <i class="bi bi-card-list"></i>
+            <span>Trips</span>
+          </a>
+          <a class="nav-link" href="driverTripHistory.html">
+            <i class="bi bi-clock-history"></i>
+            <span>Trip History</span>
+          </a>
+          <a class="nav-link" href="driverEarnings.html">
+            <i class="bi bi-currency-dollar"></i>
+            <span>Earnings</span>
+          </a>
+          <a class="nav-link" href="driverProfile.html">
+            <i class="bi bi-person"></i>
+            <span>Profile</span>
+          </a>
+          <a class="nav-link" href="driverNotifications.html">
+            <i class="bi bi-envelope"></i>
+            <span>Notifications</span>
+          </a>
+          <a class="nav-link" href="driverSettings.html">
+            <i class="bi bi-gear"></i>
+            <span>Settings</span>
+          </a>
+          <div class="nav-item mt-auto">
+            <a class="nav-link logout-btn" href="#" onclick="handleLogout()">
+              <i class="bi bi-box-arrow-right"></i>
+              <span>Logout</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+
+      <!-- MAIN CONTENT -->
+      <main class="main-content">
+        <div class="content-header">
+          <h2>Dashboard</h2>
+          <p class="text-muted">Xem tổng quan hoạt động của bạn</p>
+        </div>
+
+        <!-- Dashboard Stats -->
+        <div class="row g-4 mb-4">
+          <div class="col-md-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-primary">
+                <i class="bi bi-car-front"></i>
+              </div>
+              <div class="stat-info">
+                <h3>12</h3>
+                <p>Trips Today</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-success">
+                <i class="bi bi-cash-stack"></i>
+              </div>
+              <div class="stat-info">
+                <h3>1,250,000đ</h3>
+                <p>Today's Earnings</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-warning">
+                <i class="bi bi-star-fill"></i>
+              </div>
+              <div class="stat-info">
+                <h3>4.8</h3>
+                <p>Rating</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="stat-card">
+              <div class="stat-icon bg-info">
+                <i class="bi bi-clock"></i>
+              </div>
+              <div class="stat-info">
+                <h3>8h 30m</h3>
+                <p>Online Time</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Trips -->
+        <div class="card">
+          <div class="card-header">
+            <h5><i class="bi bi-card-list"></i> Recent Trips</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Trip ID</th>
+                    <th>Customer</th>
+                    <th>Pickup</th>
+                    <th>Dropoff</th>
+                    <th>Distance</th>
+                    <th>Fare</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>#TR001</td>
+                    <td>Nguyễn Văn A</td>
+                    <td>123 Lê Lợi, Q1</td>
+                    <td>456 Nguyễn Huệ, Q1</td>
+                    <td>5.2 km</td>
+                    <td>85,000đ</td>
+                    <td><span class="badge bg-success">Completed</span></td>
+                  </tr>
+                  <tr>
+                    <td>#TR002</td>
+                    <td>Trần Thị B</td>
+                    <td>789 Trần Hưng Đạo, Q5</td>
+                    <td>321 Hai Bà Trưng, Q3</td>
+                    <td>8.5 km</td>
+                    <td>125,000đ</td>
+                    <td><span class="badge bg-success">Completed</span></td>
+                  </tr>
+                  <tr>
+                    <td>#TR003</td>
+                    <td>Lê Văn C</td>
+                    <td>555 Võ Văn Tần, Q3</td>
+                    <td>888 Nam Kỳ Khởi Nghĩa, Q1</td>
+                    <td>3.8 km</td>
+                    <td>65,000đ</td>
+                    <td><span class="badge bg-warning">In Progress</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <p>&copy; 2025 DriveNow. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <!-- JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../js/driver.js"></script>
+  <script src="/ISP392-Font/api.js"></script>
+</body>
+</html>

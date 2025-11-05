@@ -1,0 +1,118 @@
+body {
+    background: #f5f6fa;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar {
+    width: 240px;
+    background: #fff;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    box-shadow: 2px 0 16px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 32px 0 0 0;
+}
+.logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #16a34a;
+    margin-left: 32px;
+    margin-bottom: 32px;
+}
+.welcome {
+    margin-left: 32px;
+    margin-bottom: 18px;
+    color: #444;
+    font-size: 1.1rem;
+}
+.menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+.menu li {
+    padding: 14px 32px;
+    color: #16a34a;
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.menu li:hover, .menu li.active {
+    background: #f0f4ff;
+    color: #16a34a;
+}
+
+.main-content {
+    margin-left: 260px;
+    padding: 40px 32px;
+}
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-bottom: 32px;
+}
+.profile-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #2d3a4b;
+    flex: 1;
+}
+.profile-avatar {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    background: #e9ecef;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.profile-name {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #007bff;
+    cursor: pointer;
+    transition: text-decoration 0.2s;
+}
+.profile-name:hover {
+    text-decoration: underline;
+}
+.profile-join {
+    color: #888;
+    font-size: 0.98rem;
+}
+.profile-details {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    padding: 28px 32px;
+    max-width: 420px;
+}
+.profile-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 1.05rem;
+}
+.profile-row:last-child {
+    border-bottom: none;
+}

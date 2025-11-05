@@ -1,0 +1,32 @@
+/* Filter Section */
+.filter-section {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    margin-bottom: 25px;
+}
+
+.filter-section .form-label {
+    font-weight: 600;
+    color: #234C45;
+    margin-bottom: 8px;
+}
+
+.filter-section .form-label i {
+    margin-right: 5px;
+}
+
+.filter-section .form-select,
+.filter-section .form-control {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: all 0.3s ease;
+}
+
+.filter-section .form-select:focus,
+.filter-section .form-control:focus {
+    border-color: #234C45;
+    box-shadow: 0 0 0 0.2rem rgba(35, 76, 69, 0.15);
+}
